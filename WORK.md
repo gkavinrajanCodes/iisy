@@ -157,3 +157,80 @@ Leaf Node 5: Predict class 2
 Leaf Node 6: Predict class 2
 ```
 
+
+Absolutely! Here's a detailed **daily prognosis** summarizing everything we’ve worked on today regarding your P4 project — including debugging, progress, and current status — suitable for adding to your daily report:
+
+---
+
+### **Daily Work Report — \[Date: 2025-05-27]**
+
+**Project:** *IIsy: Hybrid In-network Classification using Programmable Switches*
+
+#### **Objective for the Day:**
+
+Integrate extracted classification rules from `forest_rules.json` into the BMv2 behavioral model by populating a P4 ternary match-action table using a Python-based automation script.
+
+---
+
+### **Tasks Completed:**
+
+1. **BMv2 Runtime Issue Resolution**
+
+   * Encountered and resolved a `libruntimestubs.so.0` missing shared library error when running `simple_switch`.
+   * Verified the shared object path and made it accessible via `LD_LIBRARY_PATH`.
+
+2. **P4 Program Compilation**
+
+   * Verified that the P4 source file `classifier.p4` compiled correctly using:
+
+     ```bash
+     p4c --target bmv2 --arch v1model -o build classifier.p4
+     ```
+
+3. **Switch Execution**
+
+   * Successfully launched `simple_switch` with the compiled JSON and appropriate interfaces.
+   * Observed that the Thrift server started on port 9090, indicating readiness for runtime table programming.
+
+4. **Populating Tables via Python Script**
+
+   * Faced repeated errors from BMv2:
+
+     * “**Table is ternary, but could not extract a valid priority from args**”
+     * “**Table needs 4 key fields**”
+   * Root cause identified: **incorrect or incomplete key formatting** and **missing priority argument** for ternary tables.
+
+5. **Script Debugging and Enhancement**
+
+   * Modified Python script to:
+
+     * Ensure exactly **4 key fields** are passed per table entry.
+     * Format matches in ternary form using the `value &&& mask` format.
+     * Add a valid **priority value** as the final argument to each `table_add` command.
+
+6. **Tested Updated Script**
+
+   * New script now generates valid BMv2 runtime commands like:
+
+     ```bash
+     table_add MyIngress.classifier_table MyIngress.set_class_1 0 &&& 0 0 &&& 0 49 &&& 255 16 &&& 255 1 =>
+     ```
+   * Still testing individual entries due to BMv2 runtime sensitivity to malformed arguments.
+
+---
+
+### **Current Issues & Notes:**
+
+* BMv2 is **strict about key ordering and formatting** for ternary tables.
+* Final script compiles and prints correct commands; some entries still require testing with varied feature ranges.
+* Next step: validate accuracy of match ranges and consistency of rule priority.
+
+---
+
+### **Next Steps:**
+
+* Manually test generated commands via `simple_switch_CLI`.
+* Validate table behavior using test packets.
+* Automate packet injection and class verification to close the in-network classification loop.
+
+---
