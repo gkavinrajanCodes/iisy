@@ -1,81 +1,34 @@
 import json
-import subprocess
 
-CLI_PATH = "/usr/local/bin/simple_switch_CLI"
-P4_TABLE = "MyIngress.classifier_table"
-P4_ACTIONS = [
-    "MyIngress.set_class_0",
-    "MyIngress.set_class_1",
-    "MyIngress.set_class_2"
-]
+def float_to_byte(val, scale = 100):
+    return int(val * scale) & 0xFF
 
-def ternary_match(low, high):
-    # Return (value, mask) for ternary match
-    if low == 0 and high == 255:
-        return "0", "0"  # wildcard
-    if low == high:
-        return str(low), "255"  # exact match
-    # TODO: Better range matching (for now, fallback to exact low)
-    return str(low), "255"
-
-def build_command(rule, priority):
-    lows = [0] * 4
-    highs = [255] * 4
-
-    for (index, op, value) in rule['conditions']:
-        try:
-            v = int(round(float(value)))  # safely handle float
-        except ValueError:
-            raise Exception(f"Invalid value in rule: {value}")
-        
-        if op == "<=":
-            highs[index] = min(highs[index], v)
-        elif op == ">":
-            lows[index] = max(lows[index], v + 1)
-
-    # Convert to (value, mask) ternary strings
-    matches = [ternary_match(lows[i], highs[i]) for i in range(4)]
-
-    # Create key string with separate value and mask for each field
+def build_match_keys(rule):
     keys = []
-    for val, mask in matches:
-        keys.append(val)
-        keys.append(mask)
+    all_features = {"feature_0":None, "feature_1":None, "feature_2":None, "feature_3":None}
 
-    action = P4_ACTIONS[rule['class']]
-    key_str = " ".join(keys)
+    for feature,op,threshold in rule["conditions"]:
+        all_features[feature] = (op, threshold)
 
-    return f"table_add {P4_TABLE} {action} {key_str} {priority}"
+    for fname in sorted(all_features.keys()):
+        if all_features[fname] is None:
+            keys.append(("0x00", "0x00"))
+        else:
+            op, threshold = all_features[fname]
+            val = float_to_byte(threshold)
+            if op == "<=":
+                keys.append((f"0x{val:02x}", "0xFF"))
+            elif op == ">":
+                keys.append((f"0x{val+1:02x}", "0xFF"))
+    return keys
 
-def main():
-    try:
-        with open("log/forest_rules.json") as f:
-            forest = json.load(f)
-    except Exception as e:
-        print(f"Error loading forest_rules.json: {e}")
-        return
+with open("forest_rules_iris.json") as f:
+    forest= json.load(f)
 
-    priority = 1
-    for tree_id, rules in enumerate(forest):
-        for rule_id, rule in enumerate(rules):
-            try:
-                cmd = build_command(rule, priority)
-                print(f"Executing: {cmd}")
-                process = subprocess.Popen([CLI_PATH],
-                                           stdin=subprocess.PIPE,
-                                           stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE,
-                                           text=True)
-                out, err = process.communicate(input=cmd + "\n")
-                if out.strip():
-                    print(out)
-                if err.strip():
-                    print("Error:", err)
-                if process.returncode != 0:
-                    print(f"Command failed (priority {priority})")
-                priority += 1
-            except Exception as e:
-                print(f"Error processing rule {rule_id} in tree {tree_id}: {e}")
-
-if __name__ == "__main__":
-    main()
+with open("populate_tables.txt", "w") as out:
+    for tree in forest:
+        for rule in tree["rules"]:
+            keys = build_match_keys(rule)
+            class_id = rule["class"]
+            key_str= " ".join(f"{k} &&& {m}" for k,m in keys)
+            out.write(f"table_add MyIngress.classifier_table set_class {key_str} => {class_id}\n")

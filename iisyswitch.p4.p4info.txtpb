@@ -1,0 +1,68 @@
+# proto-file: p4/config/v1/p4info.proto
+# proto-message: p4.config.v1.P4Info
+
+pkg_info {
+  arch: "v1model"
+}
+tables {
+  preamble {
+    id: 38759824
+    name: "MyIngress.classifier_table"
+    alias: "classifier_table"
+  }
+  match_fields {
+    id: 1
+    name: "meta.feature_0"
+    bitwidth: 3
+    match_type: TERNARY
+  }
+  match_fields {
+    id: 2
+    name: "meta.feature_1"
+    bitwidth: 3
+    match_type: TERNARY
+  }
+  match_fields {
+    id: 3
+    name: "meta.feature_2"
+    bitwidth: 1
+    match_type: TERNARY
+  }
+  match_fields {
+    id: 4
+    name: "meta.feature_3"
+    bitwidth: 1
+    match_type: TERNARY
+  }
+  action_refs {
+    id: 17755228
+  }
+  action_refs {
+    id: 25597207
+  }
+  initial_default_action {
+    action_id: 25597207
+  }
+  size: 1024
+}
+actions {
+  preamble {
+    id: 17755228
+    name: "MyIngress.set_class"
+    alias: "set_class"
+  }
+  params {
+    id: 1
+    name: "class_id"
+    bitwidth: 2
+  }
+}
+actions {
+  preamble {
+    id: 25597207
+    name: "MyIngress._nop"
+    alias: "_nop"
+  }
+}
+type_info {
+}

@@ -1,14 +1,18 @@
 {
     "cSpell.words": [
         "foramt",
+        "inout",
         "kwards",
         "labeles",
+        "libruntimestubs",
         "measurments",
         "multiclass",
         "ndarray",
+        "newclassifier",
         "nparray",
         "predic",
         "proba",
-        "scikit"
+        "scikit",
+        "Sklearn"
     ]
 }

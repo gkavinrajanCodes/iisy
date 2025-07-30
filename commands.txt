@@ -1,0 +1,9 @@
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 0 &&& 0 0 &&& 255 => 0
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 0 &&& 0 1 &&& 255 => 1
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 0 &&& 0 2 &&& 255 => 2
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 2 &&& 255 0 &&& 0 => 0
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 3 &&& 0 1 &&& 255 => 1
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 3 &&& 255 2 &&& 255 => 2
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 2 &&& 255 0 &&& 0 => 0
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 3 &&& 0 1 &&& 255 => 1
+table_add MyIngress.classifier_table set_class 0 &&& 0 0 &&& 0 3 &&& 255 2 &&& 255 => 2

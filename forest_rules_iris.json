@@ -1,0 +1,146 @@
+[
+  {
+    "tree_id": 0,
+    "rules": [
+      {
+        "conditions": [
+          [
+            "feature_3",
+            "<=",
+            0.800000011920929
+          ]
+        ],
+        "class": 0,
+        "confidence": 1.0
+      },
+      {
+        "conditions": [
+          [
+            "feature_3",
+            ">",
+            0.800000011920929
+          ],
+          [
+            "feature_3",
+            "<=",
+            1.75
+          ]
+        ],
+        "class": 1,
+        "confidence": 0.9607843137254902
+      },
+      {
+        "conditions": [
+          [
+            "feature_3",
+            ">",
+            0.800000011920929
+          ],
+          [
+            "feature_3",
+            ">",
+            1.75
+          ]
+        ],
+        "class": 2,
+        "confidence": 0.9375
+      }
+    ]
+  },
+  {
+    "tree_id": 1,
+    "rules": [
+      {
+        "conditions": [
+          [
+            "feature_2",
+            "<=",
+            2.449999988079071
+          ]
+        ],
+        "class": 0,
+        "confidence": 1.0
+      },
+      {
+        "conditions": [
+          [
+            "feature_2",
+            ">",
+            2.449999988079071
+          ],
+          [
+            "feature_3",
+            "<=",
+            1.6500000357627869
+          ]
+        ],
+        "class": 1,
+        "confidence": 0.9076923076923077
+      },
+      {
+        "conditions": [
+          [
+            "feature_2",
+            ">",
+            2.449999988079071
+          ],
+          [
+            "feature_3",
+            ">",
+            1.6500000357627869
+          ]
+        ],
+        "class": 2,
+        "confidence": 1.0
+      }
+    ]
+  },
+  {
+    "tree_id": 2,
+    "rules": [
+      {
+        "conditions": [
+          [
+            "feature_2",
+            "<=",
+            2.599999964237213
+          ]
+        ],
+        "class": 0,
+        "confidence": 1.0
+      },
+      {
+        "conditions": [
+          [
+            "feature_2",
+            ">",
+            2.599999964237213
+          ],
+          [
+            "feature_3",
+            "<=",
+            1.75
+          ]
+        ],
+        "class": 1,
+        "confidence": 0.9272727272727272
+      },
+      {
+        "conditions": [
+          [
+            "feature_2",
+            ">",
+            2.599999964237213
+          ],
+          [
+            "feature_3",
+            ">",
+            1.75
+          ]
+        ],
+        "class": 2,
+        "confidence": 0.95
+      }
+    ]
+  }
+]
